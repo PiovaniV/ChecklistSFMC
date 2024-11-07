@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Checklist de Validação SFMC</title>
     <style>
-        /* Estilos básicos */
         body {
             font-family: Arial, sans-serif;
             background-color: #ffffff;
@@ -21,30 +20,22 @@
             margin-bottom: 20px;
         }
 
-        h2 {
-            color: #333;
-            background-color: #f7f7f7;
-            padding: 10px;
-            border-radius: 5px;
-        }
-
-        /* Container e botões */
-        .checklist-section {
-            background: #f9f9f9;
-            padding: 15px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
+        .form-container, .checklist-section, .section-buttons {
             max-width: 700px;
             width: 100%;
             margin-bottom: 20px;
         }
 
-        button {
+        label, input[type="text"], input[type="date"], button {
             width: 100%;
-            padding: 12px;
+            font-size: 16px;
+            margin: 8px 0;
+        }
+
+        button {
+            padding: 10px;
             background-color: #4CAF50;
             color: #fff;
-            font-size: 16px;
             border: none;
             border-radius: 8px;
             cursor: pointer;
@@ -55,12 +46,26 @@
             background-color: #45a049;
         }
 
-        /* Checkboxes e itens do checklist */
+        .section-buttons button {
+            background-color: #ff9900;
+            width: auto;
+            padding: 10px 20px;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+
+        .checklist-section {
+            display: none;
+            background: #f9f9f9;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+
         .checklist-item {
             display: flex;
             align-items: center;
             margin: 10px 0;
-            padding: 5px;
         }
 
         .checklist-item input {
@@ -69,12 +74,6 @@
             accent-color: #0056b3;
         }
 
-        .checklist-item label {
-            font-weight: 500;
-            color: #333;
-        }
-
-        /* Cores de título e seções */
         .checklist-header {
             color: #0056b3;
             font-size: 1.2em;
@@ -82,141 +81,117 @@
             margin-bottom: 10px;
         }
 
-        .section-title {
-            color: #0056b3;
-            background-color: #e0f3ff;
-            padding: 8px;
-            border-radius: 5px;
-            margin-top: 15px;
-        }
-
         .section-description {
             font-size: 0.9em;
             color: #555;
-            margin: 5px 0;
+            margin: 5px 0 15px;
         }
     </style>
 </head>
 <body>
     <h1>Checklist de Validação SFMC</h1>
 
+    <div class="form-container">
+        <label for="validador">Nome do Validador:</label>
+        <input type="text" id="validador" name="validador" required>
+
+        <label for="atividade">Nome da Atividade:</label>
+        <input type="text" id="atividade" name="atividade" required>
+
+        <label for="dataValidacao">Data de Validação:</label>
+        <input type="date" id="dataValidacao" name="dataValidacao" required>
+    </div>
+
+    <div class="section-buttons">
+        <button onclick="toggleChecklist('checklistDataExtensions')">Data Extensions</button>
+        <button onclick="toggleChecklist('checklistAutomacao')">Automação</button>
+        <button onclick="toggleChecklist('checklistEmail')">Email</button>
+        <button onclick="toggleChecklist('checklistSmsPush')">SMS e Push</button>
+        <button onclick="toggleChecklist('checklistJornada')">Jornada</button>
+    </div>
+
     <!-- Checklist para Criação de Data Extensions -->
-    <div class="checklist-section">
+    <div id="checklistDataExtensions" class="checklist-section">
         <h2 class="checklist-header">Validação para Criação de Data Extensions</h2>
         <p class="section-description">Verificação de nome, estrutura, configurações de retenção e acessos para Data Extensions.</p>
-        <div class="checklist-item"><input type="checkbox">Nome da Data Extension segue a convenção padrão</div>
-        <div class="checklist-item"><input type="checkbox">Armazenada na pasta correta</div>
-        <div class="checklist-item"><input type="checkbox">Descrição preenchida com o objetivo e informações importantes</div>
-        <div class="checklist-item"><input type="checkbox">Chave primária configurada para evitar duplicidade</div>
-        <div class="checklist-item"><input type="checkbox">Campos configurados com tipos de dados corretos</div>
-        <div class="checklist-item"><input type="checkbox">Verificação do tamanho adequado dos campos de texto</div>
-        <div class="checklist-item"><input type="checkbox">Política de retenção configurada de acordo com diretrizes</div>
-        <div class="checklist-item"><input type="checkbox">Permissões de acesso configuradas corretamente</div>
-        <div class="checklist-item"><input type="checkbox">Campos frequentemente usados em filtros foram indexados</div>
-        <div class="checklist-item"><input type="checkbox">Fonte de dados validada e documentada</div>
-        <div class="checklist-item"><input type="checkbox">Importação de dados testada para validar comportamento da DE</div>
-    </div>
-
-    <!-- Checklist para Validação de Email -->
-    <div class="checklist-section">
-        <h2 class="checklist-header">Validação para Email</h2>
-        <p class="section-description">Verificação de assunto, layout, links, e parâmetros de envio para disparo de emails.</p>
-        <div class="checklist-item"><input type="checkbox">Validação do Assunto</div>
-        <div class="checklist-item"><input type="checkbox">Validação do Preheader</div>
-        <div class="checklist-item"><input type="checkbox">Validação do Link do banner</div>
-        <div class="checklist-item"><input type="checkbox">Validação do Tagueamento GA / UTM</div>
-        <div class="checklist-item"><input type="checkbox">Validação do AMP script (se houver)</div>
-        <div class="checklist-item"><input type="checkbox">Verificar a taxonomia</div>
-        <div class="checklist-item"><input type="checkbox">Disparo de teste para verificação interna</div>
-        <div class="checklist-item"><input type="checkbox">Validação do Tag de Open</div>
-        <div class="checklist-item"><input type="checkbox">Layout em geral no Content Builder e em dispositivos</div>
-        <div class="checklist-item"><input type="checkbox">Confirmar links dos CTAs</div>
-        <div class="checklist-item"><input type="checkbox">Validação do nome do Email</div>
-        <div class="checklist-item"><input type="checkbox">Validar subscriber key das bases de disparo</div>
-        <div class="checklist-item"><input type="checkbox">Validação da segmentação da base</div>
-        <div class="checklist-item"><input type="checkbox">Confirmar padrão de pasta seguido dentro da conta</div>
-        <div class="checklist-item"><input type="checkbox">Revisão por uma pessoa sênior (2º Check)</div>
-        <div class="checklist-item"><input type="checkbox">OK do cliente após teste</div>
-        <div class="checklist-item"><input type="checkbox">Validação do dia e horário do disparo</div>
-    </div>
-
-    <!-- Checklist para Validação de SMS e Push -->
-    <div class="checklist-section">
-        <h2 class="checklist-header">Validação para SMS e Push</h2>
-        <p class="section-description">Validação de layout, links, tags, segmentação, e configurações de envio para SMS e Push.</p>
-        <div class="checklist-item"><input type="checkbox">Validação do Link do push</div>
-        <div class="checklist-item"><input type="checkbox">Validação do Tagueamento/utm</div>
-        <div class="checklist-item"><input type="checkbox">Verificação do layout da mensagem</div>
-        <div class="checklist-item"><input type="checkbox">Verificação do Keyword para SMS</div>
-        <div class="checklist-item"><input type="checkbox">Validar subscriber key das bases de disparo</div>
-        <div class="checklist-item"><input type="checkbox">Verificar formato do telefone para SMS</div>
-        <div class="checklist-item"><input type="checkbox">Validação do AMP Script (se houver)</div>
-        <div class="checklist-item"><input type="checkbox">Verificação da taxonomia</div>
-        <div class="checklist-item"><input type="checkbox">Envio de teste interno</div>
-        <div class="checklist-item"><input type="checkbox">Validação do nome do SMS e do Push</div>
-        <div class="checklist-item"><input type="checkbox">Validação da segmentação da base de disparo</div>
-        <div class="checklist-item"><input type="checkbox">Validação do número de caracteres para SMS</div>
-        <div class="checklist-item"><input type="checkbox">Validação do comportamento do Push no iOS e Android</div>
-        <div class="checklist-item"><input type="checkbox">2º Check por uma pessoa sênior</div>
-        <div class="checklist-item"><input type="checkbox">OK do cliente após evidências/testes</div>
+        <div class="checklist-item"><input type="checkbox" name="dataExtensions[]" value="Armazenada na pasta correta">Armazenada na pasta correta</div>
+        <div class="checklist-item"><input type="checkbox" name="dataExtensions[]" value="Nome da Data Extension segue a convenção padrão">Nome da Data Extension segue a convenção padrão</div>
+        <div class="checklist-item"><input type="checkbox" name="dataExtensions[]" value="Descrição preenchida com o objetivo e informações importantes">Descrição preenchida com o objetivo e informações importantes</div>
+        <!-- Add more items as needed -->
     </div>
 
     <!-- Checklist para Validação de Automação -->
-    <div class="checklist-section">
+    <div id="checklistAutomacao" class="checklist-section">
         <h2 class="checklist-header">Validação para Automação</h2>
         <p class="section-description">Verificação de atividades, segmentação, tipo de importação, e configurações de ativação para automações.</p>
-        <div class="checklist-item"><input type="checkbox">Rodar atividades de segmentação (Query, Filtros)</div>
-        <div class="checklist-item"><input type="checkbox">Verificar tipo de importação e query (add/update, overwrite, append)</div>
-        <div class="checklist-item"><input type="checkbox">Confirmar integridade dos dados e ausência de duplicados</div>
-        <div class="checklist-item"><input type="checkbox">Validação do horário de ativação</div>
-        <div class="checklist-item"><input type="checkbox">Confirmar padrão de pasta</div>
-        <div class="checklist-item"><input type="checkbox">Validação da recorrência</div>
-        <div class="checklist-item"><input type="checkbox">Comentários em cada etapa</div>
-        <div class="checklist-item"><input type="checkbox">Verificação dos comentários em atividades</div>
-        <div class="checklist-item"><input type="checkbox">Confirmação de caminho dos steps e DEs</div>
-        <div class="checklist-item"><input type="checkbox">Subscriber Key na DE Sendable</div>
-        <div class="checklist-item"><input type="checkbox">2º Check por uma pessoa sênior</div>
-        <div class="checklist-item"><input type="checkbox">OK do cliente escrito</div>
-        <div class="checklist-item"><input type="checkbox">Monitorar a automação após ativação</div>
+        <div class="checklist-item"><input type="checkbox" name="automacao[]" value="Confirmar padrão de pasta">Confirmar padrão de pasta</div>
+        <!-- Add more items as needed -->
+    </div>
+
+    <!-- Checklist para Validação de Email -->
+    <div id="checklistEmail" class="checklist-section">
+        <h2 class="checklist-header">Validação para Email</h2>
+        <p class="section-description">Verificação de assunto, layout, links, e parâmetros de envio para disparo de emails.</p>
+        <div class="checklist-item"><input type="checkbox" name="email[]" value="Verificar a taxonomia">Verificar a taxonomia</div>
+        <!-- Add more items as needed -->
+    </div>
+
+    <!-- Checklist para Validação de SMS e Push -->
+    <div id="checklistSmsPush" class="checklist-section">
+        <h2 class="checklist-header">Validação para SMS e Push</h2>
+        <p class="section-description">Validação de layout, links, tags, segmentação, e configurações de envio para SMS e Push.</p>
+        <div class="checklist-item"><input type="checkbox" name="smsPush[]" value="Validação do Link do push">Validação do Link do push</div>
+        <!-- Add more items as needed -->
     </div>
 
     <!-- Checklist para Validação de Jornada -->
-    <div class="checklist-section">
+    <div id="checklistJornada" class="checklist-section">
         <h2 class="checklist-header">Validação para Jornada</h2>
         <p class="section-description">Validação de critérios de entrada, saída, decision splits, send classification, e ativações de disparo em jornadas.</p>
-        <div class="checklist-item"><input type="checkbox">Verificar checklist de Automação (se aplicável)</div>
-        <div class="checklist-item"><input type="checkbox">Checklist de disparos (Email, SMS, Push)</div>
-        <div class="checklist-item"><input type="checkbox">Configuração de critério de saída, entrada e metas</div>
-        <div class="checklist-item"><input type="checkbox">Validação dos Decision Splits</div>
-        <div class="checklist-item"><input type="checkbox">Atualizar conteúdo do Email na jornada</div>
-        <div class="checklist-item"><input type="checkbox">Verificação do assunto e preheader</div>
-        <div class="checklist-item"><input type="checkbox">Configuração do sender, delivery e classificação de envio</div>
-        <div class="checklist-item"><input type="checkbox">Botão de validação na jornada</div>
-        <div class="checklist-item"><input type="checkbox">Testes de fluxo com diferentes contatos</div>
-        <div class="checklist-item"><input type="checkbox">Evidências dos testes</div>
-        <div class="checklist-item"><input type="checkbox">2º Check por uma pessoa sênior</div>
-        <div class="checklist-item"><input type="checkbox">OK do cliente escrito</div>
-        <div class="checklist-item"><input type="checkbox">Monitorar a jornada e disparos após ativação</div>
+        <div class="checklist-item"><input type="checkbox" name="jornada[]" value="Verificar checklist de Automação">Verificar checklist de Automação</div>
+        <!-- Add more items as needed -->
     </div>
 
     <button type="button" onclick="finalizarChecklist()">Finalizar Checklist</button>
 
     <script>
+        // Função para alternar visibilidade dos checklists
+        function toggleChecklist(id) {
+            const section = document.getElementById(id);
+            section.style.display = section.style.display === 'none' ? 'block' : 'none';
+        }
+
+        // Função para enviar os dados para Google Sheets
         function finalizarChecklist() {
-            const checkboxes = document.querySelectorAll('.checklist-section input[type="checkbox"]');
-            let allChecked = true;
+            const validador = document.getElementById('validador').value;
+            const atividade = document.getElementById('atividade').value;
+            const dataValidacao = document.getElementById('dataValidacao').value;
 
-            checkboxes.forEach(checkbox => {
-                if (!checkbox.checked) {
-                    allChecked = false;
-                }
-            });
+            const dataExtensions = Array.from(document.querySelectorAll('input[name="dataExtensions[]"]:checked')).map(cb => cb.value);
+            const automacao = Array.from(document.querySelectorAll('input[name="automacao[]"]:checked')).map(cb => cb.value);
+            const email = Array.from(document.querySelectorAll('input[name="email[]"]:checked')).map(cb => cb.value);
+            const smsPush = Array.from(document.querySelectorAll('input[name="smsPush[]"]:checked')).map(cb => cb.value);
+            const jornada = Array.from(document.querySelectorAll('input[name="jornada[]"]:checked')).map(cb => cb.value);
 
-            if (allChecked) {
-                alert("Checklist de Validação SFMC finalizado com sucesso!");
-            } else {
-                alert("Por favor, marque todos os itens antes de finalizar o checklist.");
-            }
+            const payload = {
+                validador,
+                atividade,
+                dataValidacao,
+                checklistDataExtensions: dataExtensions.join(', '),
+                checklistAutomacao: automacao.join(', '),
+                checklistEmail: email.join(', '),
+                checklistSmsPush: smsPush.join(', '),
+                checklistJornada: jornada.join(', ')
+            };
+
+            fetch("https://script.google.com/macros/s/SEU_SCRIPT_URL/exec", {
+                method: "POST",
+                body: JSON.stringify(payload),
+                headers: { "Content-Type": "application/json" }
+            })
+            .then(response => response.json())
+            .then(data => alert("Checklist de Validação SFMC finalizado com sucesso!"))
+            .catch(error => alert("Erro ao enviar dados: " + error));
         }
     </script>
 </body>
