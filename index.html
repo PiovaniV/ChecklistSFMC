@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checklist Interativo</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; max-width: 600px; margin: auto; }
+        input[type="text"], input[type="date"] { width: 100%; padding: 8px; margin: 8px 0; }
+        button { padding: 10px 20px; margin-top: 10px; cursor: pointer; }
+        #resumo { margin-top: 20px; padding: 20px; border: 1px solid #ddd; display: none; }
+    </style>
+</head>
+<body>
+    <h1>Checklist de Validação</h1>
+    <form id="checklistForm">
+        <label for="atividade">Nome da Atividade:</label>
+        <input type="text" id="atividade" name="atividade" required>
+        
+        <label for="validador">Nome do Validador:</label>
+        <input type="text" id="validador" name="validador" required>
+        
+        <label for="data">Data da Validação:</label>
+        <input type="date" id="data" name="data" required>
+        
+        <button type="button" onclick="gerarResumo()">Gerar Resumo</button>
+    </form>
+
+    <div id="resumo">
+        <h2>Resumo da Validação</h2>
+        <p><strong>Atividade:</strong> <span id="resumoAtividade"></span></p>
+        <p><strong>Validador:</strong> <span id="resumoValidador"></span></p>
+        <p><strong>Data:</strong> <span id="resumoData"></span></p>
+        <button onclick="window.print()">Imprimir Resumo</button>
+    </div>
+
+    <script>
+        function gerarResumo() {
+            const atividade = document.getElementById('atividade').value;
+            const validador = document.getElementById('validador').value;
+            const data = document.getElementById('data').value;
+
+            document.getElementById('resumoAtividade').textContent = atividade;
+            document.getElementById('resumoValidador').textContent = validador;
+            document.getElementById('resumoData').textContent = data;
+
+            document.getElementById('resumo').style.display = 'block';
+        }
+    </script>
+</body>
+</html>
