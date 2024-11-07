@@ -9,13 +9,14 @@
         .form-container { background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); max-width: 600px; width: 100%; margin-bottom: 20px; }
         h1, h2 { color: #333; }
         label { display: block; margin-top: 10px; color: #333; }
-        input[type="text"], input[type="date"] { width: 100%; padding: 10px; margin-top: 5px; border: 1px solid #ddd; border-radius: 4px; }
+        input[type="text"], input[type="date"], select { width: 100%; padding: 10px; margin-top: 5px; border: 1px solid #ddd; border-radius: 4px; }
         button { width: 100%; padding: 10px; margin-top: 20px; background-color: #4CAF50; color: white; border: none; border-radius: 4px; cursor: pointer; }
         button:hover { background-color: #45a049; }
         #resumo { margin-top: 20px; padding: 20px; border-radius: 8px; background: #e7f3e7; display: none; }
         .checklist-section { margin-top: 20px; }
         .checklist-item { display: flex; align-items: center; margin-top: 10px; }
         .checklist-item input { margin-right: 10px; }
+        .hidden { display: none; }
     </style>
 </head>
 <body>
@@ -25,6 +26,9 @@
             <label for="atividade">Nome da Atividade:</label>
             <input type="text" id="atividade" name="atividade" required>
             
+            <label for="nomeDE">Nome da Data Extension:</label>
+            <input type="text" id="nomeDE" name="nomeDE" required>
+
             <label for="validador">Nome do Validador:</label>
             <input type="text" id="validador" name="validador" required>
             
@@ -38,45 +42,152 @@
     <div id="resumo">
         <h2>Resumo da Validação</h2>
         <p><strong>Atividade:</strong> <span id="resumoAtividade"></span></p>
+        <p><strong>Data Extension:</strong> <span id="resumoNomeDE"></span></p>
         <p><strong>Validador:</strong> <span id="resumoValidador"></span></p>
         <p><strong>Data:</strong> <span id="resumoData"></span></p>
     </div>
 
+    <!-- Checklist para Criação de Data Extensions -->
     <div class="checklist-section">
         <h2>Checklist de Validação para Criação de Data Extensions</h2>
-        <div id="checklist">
-            <div class="checklist-item"><input type="checkbox" id="nomeDE"><label for="nomeDE">Nome da Data Extension está padronizado e não contém caracteres especiais.</label></div>
-            <div class="checklist-item"><input type="checkbox" id="pasta"><label for="pasta">Data Extension está armazenada na pasta correta com permissões adequadas.</label></div>
-            <div class="checklist-item"><input type="checkbox" id="descricao"><label for="descricao">Descrição clara da Data Extension, incluindo uso e origem dos dados.</label></div>
-            <div class="checklist-item"><input type="checkbox" id="chavePrimaria"><label for="chavePrimaria">Chave primária configurada para evitar duplicidade, se necessário.</label></div>
-            <div class="checklist-item"><input type="checkbox" id="campos"><label for="campos">Campos configurados com os tipos de dados corretos e tamanhos adequados.</label></div>
-            <div class="checklist-item"><input type="checkbox" id="relacionamento"><label for="relacionamento">Relacionamento com outras Data Extensions configurado adequadamente.</label></div>
-            <div class="checklist-item"><input type="checkbox" id="retencao"><label for="retencao">Política de retenção configurada de acordo com as normas da empresa.</label></div>
-            <div class="checklist-item"><input type="checkbox" id="permissoes"><label for="permissoes">Permissões de acesso configuradas corretamente.</label></div>
-            <div class="checklist-item"><input type="checkbox" id="indexacao"><label for="indexacao">Campos indexados corretamente para melhorar o desempenho.</label></div>
-            <div class="checklist-item"><input type="checkbox" id="fonteDados"><label for="fonteDados">Fonte de dados validada e documentada, com processo de carga testado.</label></div>
-            <div class="checklist-item"><input type="checkbox" id="automacao"><label for="automacao">Automação de atualização configurada e monitorada.</label></div>
-            <div class="checklist-item"><input type="checkbox" id="compartilhamento"><label for="compartilhamento">Configuração de compartilhamento entre BUs adequada.</label></div>
-            <div class="checklist-item"><input type="checkbox" id="integridade"><label for="integridade">Integridade dos dados testada e revisada.</label></div>
+        <div class="checklist-item">
+            <label for="tipoDataExtension">Finalidade da Data Extension:</label>
+            <select id="tipoDataExtension" name="tipoDataExtension" onchange="mostrarSubChecklistDE()">
+                <option value="">Selecione a finalidade</option>
+                <option value="envio">Usada para Envio</option>
+                <option value="teste">Usada para Teste</option>
+                <option value="armazenamento">Armazenamento de Dados</option>
+            </select>
         </div>
-        <button type="button" onclick="finalizarChecklist()">Finalizar Checklist</button>
+
+        <!-- Subchecklist para Data Extension Usada para Envio -->
+        <div id="checklistEnvio" class="hidden checklist-section">
+            <h3>Checklist para Data Extension Usada para Envio</h3>
+            <div class="checklist-item"><input type="checkbox" id="nomeEnvio"><label for="nomeEnvio">Nome segue a convenção para envio.</label></div>
+            <div class="checklist-item"><input type="checkbox" id="chavePrimariaEnvio"><label for="chavePrimariaEnvio">Chave primária configurada para evitar duplicidade.</label></div>
+            <div class="checklist-item"><input type="checkbox" id="camposEnvio"><label for="camposEnvio">Campos e tipos de dados configurados corretamente.</label></div>
+            <div class="checklist-item"><input type="checkbox" id="indexacaoEnvio"><label for="indexacaoEnvio">Campos usados em filtros foram indexados.</label></div>
+        </div>
+
+        <!-- Subchecklist para Data Extension Usada para Teste -->
+        <div id="checklistTeste" class="hidden checklist-section">
+            <h3>Checklist para Data Extension Usada para Teste</h3>
+            <div class="checklist-item"><input type="checkbox" id="nomeTeste"><label for="nomeTeste">Nome segue a convenção para teste.</label></div>
+            <div class="checklist-item"><input type="checkbox" id="retencaoTeste"><label for="retencaoTeste">Política de retenção configurada para testes temporários.</label></div>
+            <div class="checklist-item"><input type="checkbox" id="dadosValidacao"><label for="dadosValidacao">Dados de teste validados e seguros.</label></div>
+        </div>
+
+        <!-- Subchecklist para Data Extension para Armazenamento de Dados -->
+        <div id="checklistArmazenamento" class="hidden checklist-section">
+            <h3>Checklist para Data Extension para Armazenamento de Dados</h3>
+            <div class="checklist-item"><input type="checkbox" id="nomeArmazenamento"><label for="nomeArmazenamento">Nome segue a convenção de armazenamento.</label></div>
+            <div class="checklist-item"><input type="checkbox" id="retencaoArmazenamento"><label for="retencaoArmazenamento">Política de retenção configurada para dados de longo prazo.</label></div>
+            <div class="checklist-item"><input type="checkbox" id="permissoesArmazenamento"><label for="permissoesArmazenamento">Permissões de acesso configuradas corretamente.</label></div>
+            <div class="checklist-item"><input type="checkbox" id="integridadeArmazenamento"><label for="integridadeArmazenamento">Integridade dos dados foi verificada.</label></div>
+        </div>
     </div>
+
+    <!-- Checklist para Criação de Automations -->
+    <div class="checklist-section">
+        <h2>Checklist de Validação para Criação de Automations</h2>
+        <div class="checklist-item">
+            <label for="tipoAtividade">Tipo de Atividade:</label>
+            <select id="tipoAtividade" name="tipoAtividade" onchange="mostrarSubChecklistAutomation()">
+                <option value="">Selecione o tipo de atividade</option>
+                <option value="dataExtract">Data Extract</option>
+                <option value="sqlQuery">SQL Query</option>
+                <option value="import">Import</option>
+                <option value="envioEmail">Envio de Email</option>
+            </select>
+        </div>
+
+        <!-- Subchecklist para Data Extract -->
+        <div id="checklistDataExtract" class="hidden checklist-section">
+            <h3>Checklist para Data Extract</h3>
+            <div class="checklist-item"><input type="checkbox" id="extracaoFonte"><label for="extracaoFonte">Fonte de dados correta foi configurada.</label></div>
+            <div class="checklist-item"><input type="checkbox" id="configuracaoHorario"><label for="configuracaoHorario">Horário de extração está configurado conforme esperado.</label></div>
+            <div class="checklist-item"><input type="checkbox" id="integridadeDados"><label for="integridadeDados">Integridade dos dados foi verificada.</label></div>
+        </div>
+
+        <!-- Subchecklist para SQL Query -->
+        <div id="checklistSQLQuery" class="hidden checklist-section">
+            <h3>Checklist para SQL Query</h3>
+            <div class="checklist-item"><input type="checkbox" id="sqlSintaxe"><label for="sqlSintaxe">Sintaxe da consulta SQL foi verificada.</label></div>
+            <div class="checklist-item"><input type="checkbox" id="destinoDE"><label for="destinoDE">Data Extension de destino foi configurada corretamente.</label></div>
+            <div class="checklist-item"><input type="checkbox" id="execucaoTeste"><label for="execucaoTeste">Teste de execução da consulta foi realizado.</label></div>
+        </div>
+
+        <!-- Subchecklist para Import -->
+        <div id="checklistImport" class="hidden checklist-section">
+            <h3>Checklist para Import</h3>
+            <div class="checklist-item"><input type="checkbox" id="origemArquivo"><label for="origemArquivo">Arquivo de origem foi selecionado corretamente.</label></div>
+            <div class="checklist-item"><input type="checkbox" id="mapeamentoCampos"><label for="mapeamentoCampos">Mapeamento de campos foi verificado.</label></div>
+            <div class="checklist-item"><input type="checkbox" id="confAgendamentoImport"><label for="confAgendamentoImport">Agendamento para importação está configurado corretamente.</label></div>
+        </div>
+
+        <!-- Subchecklist para Envio de Email -->
+        <div id="checklistEnvioEmail" class="hidden checklist-section">
+            <h3>Checklist para Envio de Email</h3>
+            <div class="checklist-item"><input type="checkbox" id="templateEmail"><label for="templateEmail">Template de email foi selecionado e configurado.</label></div>
+            <div class="checklist-item"><input type="checkbox" id="listaSegmentada"><label for="listaSegmentada">Lista segmentada correta foi selecionada.</label></div>
+            <div class="checklist-item"><input type="checkbox" id="testeEnvio"><label for="testeEnvio">Teste de envio foi realizado.</label></div>
+        </div>
+    </div>
+
+    <button type="button" onclick="finalizarChecklist()">Finalizar Checklist</button>
 
     <script>
         function gerarResumo() {
             const atividade = document.getElementById('atividade').value;
+            const nomeDE = document.getElementById('nomeDE').value;
             const validador = document.getElementById('validador').value;
             const data = document.getElementById('data').value;
 
             document.getElementById('resumoAtividade').textContent = atividade;
+            document.getElementById('resumoNomeDE').textContent = nomeDE;
             document.getElementById('resumoValidador').textContent = validador;
             document.getElementById('resumoData').textContent = data;
 
             document.getElementById('resumo').style.display = 'block';
         }
 
+        function mostrarSubChecklistDE() {
+            const tipoDataExtension = document.getElementById('tipoDataExtension').value;
+
+            document.getElementById('checklistEnvio').classList.add('hidden');
+            document.getElementById('checklistTeste').classList.add('hidden');
+            document.getElementById('checklistArmazenamento').classList.add('hidden');
+
+            if (tipoDataExtension === 'envio') {
+                document.getElementById('checklistEnvio').classList.remove('hidden');
+            } else if (tipoDataExtension === 'teste') {
+                document.getElementById('checklistTeste').classList.remove('hidden');
+            } else if (tipoDataExtension === 'armazenamento') {
+                document.getElementById('checklistArmazenamento').classList.remove('hidden');
+            }
+        }
+
+        function mostrarSubChecklistAutomation() {
+            const tipoAtividade = document.getElementById('tipoAtividade').value;
+
+            document.getElementById('checklistDataExtract').classList.add('hidden');
+            document.getElementById('checklistSQLQuery').classList.add('hidden');
+            document.getElementById('checklistImport').classList.add('hidden');
+            document.getElementById('checklistEnvioEmail').classList.add('hidden');
+
+            if (tipoAtividade === 'dataExtract') {
+                document.getElementById('checklistDataExtract').classList.remove('hidden');
+            } else if (tipoAtividade === 'sqlQuery') {
+                document.getElementById('checklistSQLQuery').classList.remove('hidden');
+            } else if (tipoAtividade === 'import') {
+                document.getElementById('checklistImport').classList.remove('hidden');
+            } else if (tipoAtividade === 'envioEmail') {
+                document.getElementById('checklistEnvioEmail').classList.remove('hidden');
+            }
+        }
+
         function finalizarChecklist() {
-            const checkboxes = document.querySelectorAll('#checklist input[type="checkbox"]');
+            const checkboxes = document.querySelectorAll('.checklist-section input[type="checkbox"]');
             let allChecked = true;
             
             checkboxes.forEach(checkbox => {
