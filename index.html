@@ -3,35 +3,63 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Checklist Interativo</title>
+    <title>Checklist de Validação SFMC</title>
     <style>
-        body { font-family: Arial, sans-serif; padding: 20px; max-width: 600px; margin: auto; }
-        input[type="text"], input[type="date"] { width: 100%; padding: 8px; margin: 8px 0; }
-        button { padding: 10px 20px; margin-top: 10px; cursor: pointer; }
-        #resumo { margin-top: 20px; padding: 20px; border: 1px solid #ddd; display: none; }
+        body { font-family: Arial, sans-serif; background: #f4f7f9; display: flex; flex-direction: column; align-items: center; padding: 20px; }
+        .form-container { background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); max-width: 600px; width: 100%; margin-bottom: 20px; }
+        h1, h2 { color: #333; }
+        label { display: block; margin-top: 10px; color: #333; }
+        input[type="text"], input[type="date"] { width: 100%; padding: 10px; margin-top: 5px; border: 1px solid #ddd; border-radius: 4px; }
+        button { width: 100%; padding: 10px; margin-top: 20px; background-color: #4CAF50; color: white; border: none; border-radius: 4px; cursor: pointer; }
+        button:hover { background-color: #45a049; }
+        #resumo { margin-top: 20px; padding: 20px; border-radius: 8px; background: #e7f3e7; display: none; }
+        .checklist-section { margin-top: 20px; }
+        .checklist-item { display: flex; align-items: center; margin-top: 10px; }
+        .checklist-item input { margin-right: 10px; }
     </style>
 </head>
 <body>
-    <h1>Checklist de Validação</h1>
-    <form id="checklistForm">
-        <label for="atividade">Nome da Atividade:</label>
-        <input type="text" id="atividade" name="atividade" required>
-        
-        <label for="validador">Nome do Validador:</label>
-        <input type="text" id="validador" name="validador" required>
-        
-        <label for="data">Data da Validação:</label>
-        <input type="date" id="data" name="data" required>
-        
-        <button type="button" onclick="gerarResumo()">Gerar Resumo</button>
-    </form>
+    <h1>Checklist de Validação SFMC</h1>
+    <div class="form-container">
+        <form id="checklistForm">
+            <label for="atividade">Nome da Atividade:</label>
+            <input type="text" id="atividade" name="atividade" required>
+            
+            <label for="validador">Nome do Validador:</label>
+            <input type="text" id="validador" name="validador" required>
+            
+            <label for="data">Data da Validação:</label>
+            <input type="date" id="data" name="data" required>
+            
+            <button type="button" onclick="gerarResumo()">Gerar Resumo</button>
+        </form>
+    </div>
 
     <div id="resumo">
         <h2>Resumo da Validação</h2>
         <p><strong>Atividade:</strong> <span id="resumoAtividade"></span></p>
         <p><strong>Validador:</strong> <span id="resumoValidador"></span></p>
         <p><strong>Data:</strong> <span id="resumoData"></span></p>
-        <button onclick="window.print()">Imprimir Resumo</button>
+    </div>
+
+    <div class="checklist-section">
+        <h2>Checklist de Validação para Criação de Data Extensions</h2>
+        <div id="checklist">
+            <div class="checklist-item"><input type="checkbox" id="nomeDE"><label for="nomeDE">Nome da Data Extension está padronizado e não contém caracteres especiais.</label></div>
+            <div class="checklist-item"><input type="checkbox" id="pasta"><label for="pasta">Data Extension está armazenada na pasta correta com permissões adequadas.</label></div>
+            <div class="checklist-item"><input type="checkbox" id="descricao"><label for="descricao">Descrição clara da Data Extension, incluindo uso e origem dos dados.</label></div>
+            <div class="checklist-item"><input type="checkbox" id="chavePrimaria"><label for="chavePrimaria">Chave primária configurada para evitar duplicidade, se necessário.</label></div>
+            <div class="checklist-item"><input type="checkbox" id="campos"><label for="campos">Campos configurados com os tipos de dados corretos e tamanhos adequados.</label></div>
+            <div class="checklist-item"><input type="checkbox" id="relacionamento"><label for="relacionamento">Relacionamento com outras Data Extensions configurado adequadamente.</label></div>
+            <div class="checklist-item"><input type="checkbox" id="retencao"><label for="retencao">Política de retenção configurada de acordo com as normas da empresa.</label></div>
+            <div class="checklist-item"><input type="checkbox" id="permissoes"><label for="permissoes">Permissões de acesso configuradas corretamente.</label></div>
+            <div class="checklist-item"><input type="checkbox" id="indexacao"><label for="indexacao">Campos indexados corretamente para melhorar o desempenho.</label></div>
+            <div class="checklist-item"><input type="checkbox" id="fonteDados"><label for="fonteDados">Fonte de dados validada e documentada, com processo de carga testado.</label></div>
+            <div class="checklist-item"><input type="checkbox" id="automacao"><label for="automacao">Automação de atualização configurada e monitorada.</label></div>
+            <div class="checklist-item"><input type="checkbox" id="compartilhamento"><label for="compartilhamento">Configuração de compartilhamento entre BUs adequada.</label></div>
+            <div class="checklist-item"><input type="checkbox" id="integridade"><label for="integridade">Integridade dos dados testada e revisada.</label></div>
+        </div>
+        <button type="button" onclick="finalizarChecklist()">Finalizar Checklist</button>
     </div>
 
     <script>
@@ -45,6 +73,23 @@
             document.getElementById('resumoData').textContent = data;
 
             document.getElementById('resumo').style.display = 'block';
+        }
+
+        function finalizarChecklist() {
+            const checkboxes = document.querySelectorAll('#checklist input[type="checkbox"]');
+            let allChecked = true;
+            
+            checkboxes.forEach(checkbox => {
+                if (!checkbox.checked) {
+                    allChecked = false;
+                }
+            });
+
+            if (allChecked) {
+                alert("Checklist finalizado com sucesso!");
+            } else {
+                alert("Por favor, marque todos os itens antes de finalizar o checklist.");
+            }
         }
     </script>
 </body>
