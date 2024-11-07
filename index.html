@@ -287,14 +287,14 @@
                 emailNames
             };
 
-            fetch("https://script.google.com/macros/s/AKfycbximq5taBhX4aBBXwRxsJDbQavE6JKmPqK1_aUrfR0C1-Xg8JZzbsHyRB5dFTM6obED/exec", {
-                method: "POST",
-                body: JSON.stringify(payload),
-                headers: { "Content-Type": "application/json" }
+           fetch("https://script.google.com/macros/s/AKfycbximq5taBhX4aBBXwRxsJDbQavE6JKmPqK1_aUrfR0C1-Xg8JZzbsHyRB5dFTM6obED/exec", {
+            method: "POST",
+            mode: "no-cors",  // Desativa CORS
+            body: JSON.stringify(payload),
+            headers: { "Content-Type": "application/json" }
             })
-            .then(response => response.json())
-            .then(data => alert("Checklist de Validação SFMC finalizado com sucesso!"))
-            .catch(error => alert("Erro ao enviar dados: " + error));
+                .then(() => alert("Checklist de Validação SFMC enviado com sucesso!"))
+                .catch(error => alert("Erro ao enviar dados: " + error));
         }
     </script>
 </body>
