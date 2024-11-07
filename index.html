@@ -26,7 +26,7 @@
             margin-bottom: 20px;
         }
 
-        label, input[type="text"], input[type="date"], button {
+        label, input[type="text"], input[type="date"], input[type="number"], button {
             width: 100%;
             font-size: 16px;
             margin: 8px 0;
@@ -100,56 +100,101 @@
 
         <label for="dataValidacao">Data de Validação:</label>
         <input type="date" id="dataValidacao" name="dataValidacao" required>
+
+        <label for="qtdDataExtensions">Quantidade de Data Extensions a validar:</label>
+        <input type="number" id="qtdDataExtensions" name="qtdDataExtensions" min="1" required>
+
+        <label for="qtdEmails">Quantidade de Emails a validar:</label>
+        <input type="number" id="qtdEmails" name="qtdEmails" min="1" required>
+
+        <button type="button" onclick="generateChecklists()">Gerar Checklists</button>
     </div>
 
     <div class="section-buttons">
-        <button onclick="toggleChecklist('checklistDataExtensions')">Data Extensions</button>
+        <button onclick="toggleChecklist('dataExtensionsContainer')">Data Extensions</button>
+        <button onclick="toggleChecklist('emailsContainer')">Emails</button>
         <button onclick="toggleChecklist('checklistAutomacao')">Automação</button>
-        <button onclick="toggleChecklist('checklistEmail')">Email</button>
         <button onclick="toggleChecklist('checklistSmsPush')">SMS e Push</button>
         <button onclick="toggleChecklist('checklistJornada')">Jornada</button>
     </div>
 
-    <!-- Checklist para Criação de Data Extensions -->
-    <div id="checklistDataExtensions" class="checklist-section">
-        <h2 class="checklist-header">Validação para Criação de Data Extensions</h2>
+    <!-- Container para múltiplas Data Extensions -->
+    <div id="dataExtensionsContainer" class="checklist-section">
+        <h2 class="checklist-header">Validação para Data Extensions</h2>
         <p class="section-description">Verificação de nome, estrutura, configurações de retenção e acessos para Data Extensions.</p>
-        <div class="checklist-item"><input type="checkbox" name="dataExtensions[]" value="Armazenada na pasta correta">Armazenada na pasta correta</div>
-        <div class="checklist-item"><input type="checkbox" name="dataExtensions[]" value="Nome da Data Extension segue a convenção padrão">Nome da Data Extension segue a convenção padrão</div>
-        <div class="checklist-item"><input type="checkbox" name="dataExtensions[]" value="Descrição preenchida com o objetivo e informações importantes">Descrição preenchida com o objetivo e informações importantes</div>
-        <!-- Add more items as needed -->
+        <div id="dataExtensionsChecklist"></div>
+    </div>
+
+    <!-- Container para múltiplos Emails -->
+    <div id="emailsContainer" class="checklist-section">
+        <h2 class="checklist-header">Validação para Emails</h2>
+        <p class="section-description">Verificação de assunto, layout, links, e parâmetros de envio para cada Email.</p>
+        <div id="emailsChecklist"></div>
     </div>
 
     <!-- Checklist para Validação de Automação -->
     <div id="checklistAutomacao" class="checklist-section">
         <h2 class="checklist-header">Validação para Automação</h2>
         <p class="section-description">Verificação de atividades, segmentação, tipo de importação, e configurações de ativação para automações.</p>
+        <label>Nome da Automação:</label>
+        <input type="text" name="automationName" placeholder="Nome da Automação" required>
         <div class="checklist-item"><input type="checkbox" name="automacao[]" value="Confirmar padrão de pasta">Confirmar padrão de pasta</div>
-        <!-- Add more items as needed -->
-    </div>
-
-    <!-- Checklist para Validação de Email -->
-    <div id="checklistEmail" class="checklist-section">
-        <h2 class="checklist-header">Validação para Email</h2>
-        <p class="section-description">Verificação de assunto, layout, links, e parâmetros de envio para disparo de emails.</p>
-        <div class="checklist-item"><input type="checkbox" name="email[]" value="Verificar a taxonomia">Verificar a taxonomia</div>
-        <!-- Add more items as needed -->
+        <div class="checklist-item"><input type="checkbox" name="automacao[]" value="Verificar tipo de importação e query">Verificar tipo de importação e query (add/update, overwrite, append)</div>
+        <div class="checklist-item"><input type="checkbox" name="automacao[]" value="Comentários em cada etapa">Comentários em cada etapa</div>
+        <div class="checklist-item"><input type="checkbox" name="automacao[]" value="Validação do horário de ativação">Validação do horário de ativação</div>
+        <div class="checklist-item"><input type="checkbox" name="automacao[]" value="Validação da recorrência">Validação da recorrência</div>
+        <div class="checklist-item"><input type="checkbox" name="automacao[]" value="Confirmação de caminho dos steps e DEs">Confirmação de caminho dos steps e DEs</div>
+        <div class="checklist-item"><input type="checkbox" name="automacao[]" value="Verificação dos comentários em atividades">Verificação dos comentários em atividades</div>
+        <div class="checklist-item"><input type="checkbox" name="automacao[]" value="Rodar atividades de segmentação">Rodar atividades de segmentação (Query, Filtros)</div>
+        <div class="checklist-item"><input type="checkbox" name="automacao[]" value="Confirmar integridade dos dados">Confirmar integridade dos dados e ausência de duplicados</div>
+        <div class="checklist-item"><input type="checkbox" name="automacao[]" value="2º Check por uma pessoa sênior">2º Check por uma pessoa sênior</div>
+        <div class="checklist-item"><input type="checkbox" name="automacao[]" value="OK do cliente escrito">OK do cliente escrito</div>
+        <div class="checklist-item"><input type="checkbox" name="automacao[]" value="Monitorar a automação">Monitorar a automação após ativação</div>
     </div>
 
     <!-- Checklist para Validação de SMS e Push -->
     <div id="checklistSmsPush" class="checklist-section">
         <h2 class="checklist-header">Validação para SMS e Push</h2>
         <p class="section-description">Validação de layout, links, tags, segmentação, e configurações de envio para SMS e Push.</p>
+        <label>Nome da Campanha SMS/Push:</label>
+        <input type="text" name="smsPushName" placeholder="Nome do SMS/Push" required>
         <div class="checklist-item"><input type="checkbox" name="smsPush[]" value="Validação do Link do push">Validação do Link do push</div>
-        <!-- Add more items as needed -->
+        <div class="checklist-item"><input type="checkbox" name="smsPush[]" value="Validação do Tagueamento/utm">Validação do Tagueamento/utm</div>
+        <div class="checklist-item"><input type="checkbox" name="smsPush[]" value="Verificação do layout da mensagem">Verificação do layout da mensagem</div>
+        <div class="checklist-item"><input type="checkbox" name="smsPush[]" value="Verificação do Keyword para SMS">Verificação do Keyword para SMS</div>
+        <div class="checklist-item"><input type="checkbox" name="smsPush[]" value="Validar subscriber key">Validar subscriber key das bases de disparo</div>
+        <div class="checklist-item"><input type="checkbox" name="smsPush[]" value="Verificar formato do telefone">Verificar formato do telefone para SMS</div>
+        <div class="checklist-item"><input type="checkbox" name="smsPush[]" value="Validação do AMP Script">Validação do AMP Script (se houver)</div>
+        <div class="checklist-item"><input type="checkbox" name="smsPush[]" value="Verificação da taxonomia">Verificação da taxonomia</div>
+        <div class="checklist-item"><input type="checkbox" name="smsPush[]" value="Envio de teste interno">Envio de teste interno</div>
+        <div class="checklist-item"><input type="checkbox" name="smsPush[]" value="Validação do nome do SMS e do Push">Validação do nome do SMS e do Push</div>
+        <div class="checklist-item"><input type="checkbox" name="smsPush[]" value="Validação da segmentação da base">Validação da segmentação da base de disparo</div>
+        <div class="checklist-item"><input type="checkbox" name="smsPush[]" value="Validação do número de caracteres para SMS">Validação do número de caracteres para SMS</div>
+        <div class="checklist-item"><input type="checkbox" name="smsPush[]" value="Validação do comportamento do Push">Validação do comportamento do Push no iOS e Android</div>
+        <div class="checklist-item"><input type="checkbox" name="smsPush[]" value="2º Check por uma pessoa sênior">2º Check por uma pessoa sênior</div>
+        <div class="checklist-item"><input type="checkbox" name="smsPush[]" value="OK do cliente após evidências/testes">OK do cliente após evidências/testes</div>
     </div>
 
     <!-- Checklist para Validação de Jornada -->
     <div id="checklistJornada" class="checklist-section">
         <h2 class="checklist-header">Validação para Jornada</h2>
         <p class="section-description">Validação de critérios de entrada, saída, decision splits, send classification, e ativações de disparo em jornadas.</p>
-        <div class="checklist-item"><input type="checkbox" name="jornada[]" value="Verificar checklist de Automação">Verificar checklist de Automação</div>
-        <!-- Add more items as needed -->
+        <label>Nome da Jornada:</label>
+        <input type="text" name="jornadaName" placeholder="Nome da Jornada" required>
+        <div class="checklist-item"><input type="checkbox" name="jornada[]" value="Verificar checklist de Automação">Verificar checklist de Automação (se aplicável)</div>
+        <div class="checklist-item"><input type="checkbox" name="jornada[]" value="Checklist de disparos">Checklist de disparos (Email, SMS, Push)</div>
+        <div class="checklist-item"><input type="checkbox" name="jornada[]" value="Configuração de critério de saída, entrada e metas">Configuração de critério de saída, entrada e metas</div>
+        <div class="checklist-item"><input type="checkbox" name="jornada[]" value="Validação dos Decision Splits">Validação dos Decision Splits</div>
+        <div class="checklist-item"><input type="checkbox" name="jornada[]" value="Atualizar conteúdo do Email">Atualizar conteúdo do Email na jornada</div>
+        <div class="checklist-item"><input type="checkbox" name="jornada[]" value="Verificação do assunto e preheader">Verificação do assunto e preheader</div>
+        <div class="checklist-item"><input type="checkbox" name="jornada[]" value="Validação da segmentação da base">Validação da segmentação da base</div>
+        <div class="checklist-item"><input type="checkbox" name="jornada[]" value="Configuração do sender, delivery e classificação">Configuração do sender, delivery e classificação de envio</div>
+        <div class="checklist-item"><input type="checkbox" name="jornada[]" value="Botão de validação na jornada">Botão de validação na jornada</div>
+        <div class="checklist-item"><input type="checkbox" name="jornada[]" value="Testes de fluxo com diferentes contatos">Testes de fluxo com diferentes contatos</div>
+        <div class="checklist-item"><input type="checkbox" name="jornada[]" value="Evidências dos testes">Evidências dos testes</div>
+        <div class="checklist-item"><input type="checkbox" name="jornada[]" value="2º Check por uma pessoa sênior">2º Check por uma pessoa sênior</div>
+        <div class="checklist-item"><input type="checkbox" name="jornada[]" value="OK do cliente escrito">OK do cliente escrito</div>
+        <div class="checklist-item"><input type="checkbox" name="jornada[]" value="Monitorar a jornada">Monitorar a jornada e disparos após ativação</div>
     </div>
 
     <button type="button" onclick="finalizarChecklist()">Finalizar Checklist</button>
@@ -161,27 +206,81 @@
             section.style.display = section.style.display === 'none' ? 'block' : 'none';
         }
 
+        // Função para gerar checklists com base nas quantidades de DEs e Emails
+        function generateChecklists() {
+            const qtdDataExtensions = document.getElementById('qtdDataExtensions').value;
+            const qtdEmails = document.getElementById('qtdEmails').value;
+            const dataExtensionsContainer = document.getElementById('dataExtensionsChecklist');
+            const emailsContainer = document.getElementById('emailsChecklist');
+            
+            dataExtensionsContainer.innerHTML = '';
+            emailsContainer.innerHTML = '';
+
+            // Gerar checklists de Data Extensions
+            for (let i = 1; i <= qtdDataExtensions; i++) {
+                const deSection = document.createElement('div');
+                deSection.innerHTML = `
+                    <h3>Data Extension ${i}</h3>
+                    <label>Nome da Data Extension:</label>
+                    <input type="text" name="dataExtensionNames[]" placeholder="Nome da Data Extension ${i}" required>
+                    <div class="checklist-item"><input type="checkbox" name="dataExtensions${i}[]" value="Armazenada na pasta correta">Armazenada na pasta correta</div>
+                    <div class="checklist-item"><input type="checkbox" name="dataExtensions${i}[]" value="Nome segue a convenção padrão">Nome segue a convenção padrão</div>
+                    <div class="checklist-item"><input type="checkbox" name="dataExtensions${i}[]" value="Descrição preenchida com informações importantes">Descrição preenchida com informações importantes</div>
+                    <div class="checklist-item"><input type="checkbox" name="dataExtensions${i}[]" value="Chave primária configurada">Chave primária configurada</div>
+                    <div class="checklist-item"><input type="checkbox" name="dataExtensions${i}[]" value="Campos com tipos corretos">Campos configurados com tipos de dados corretos</div>
+                    <div class="checklist-item"><input type="checkbox" name="dataExtensions${i}[]" value="Tamanho dos campos verificado">Verificação do tamanho adequado dos campos de texto</div>
+                    <div class="checklist-item"><input type="checkbox" name="dataExtensions${i}[]" value="Política de retenção configurada">Política de retenção configurada de acordo com diretrizes</div>
+                    <div class="checklist-item"><input type="checkbox" name="dataExtensions${i}[]" value="Permissões de acesso configuradas">Permissões de acesso configuradas para usuários autorizados</div>
+                    <div class="checklist-item"><input type="checkbox" name="dataExtensions${i}[]" value="Campos usados em filtros indexados">Campos usados em filtros estão indexados</div>
+                    <div class="checklist-item"><input type="checkbox" name="dataExtensions${i}[]" value="Fonte de dados validada">Fonte de dados validada e documentada</div>
+                    <div class="checklist-item"><input type="checkbox" name="dataExtensions${i}[]" value="Importação testada">Importação de dados testada para validar comportamento</div>
+                `;
+                dataExtensionsContainer.appendChild(deSection);
+            }
+
+            // Gerar checklists de Emails
+            for (let i = 1; i <= qtdEmails; i++) {
+                const emailSection = document.createElement('div');
+                emailSection.innerHTML = `
+                    <h3>Email ${i}</h3>
+                    <label>Nome do Email:</label>
+                    <input type="text" name="emailNames[]" placeholder="Nome do Email ${i}" required>
+                    <div class="checklist-item"><input type="checkbox" name="emails${i}[]" value="Verificar a taxonomia">Verificar a taxonomia</div>
+                    <div class="checklist-item"><input type="checkbox" name="emails${i}[]" value="Validação do nome do Email">Validação do nome do Email</div>
+                    <div class="checklist-item"><input type="checkbox" name="emails${i}[]" value="Confirmar padrão de pasta">Confirmar padrão de pasta seguido dentro da conta</div>
+                    <div class="checklist-item"><input type="checkbox" name="emails${i}[]" value="Validação do Assunto">Validação do Assunto</div>
+                    <div class="checklist-item"><input type="checkbox" name="emails${i}[]" value="Validação do Preheader">Validação do Preheader</div>
+                    <div class="checklist-item"><input type="checkbox" name="emails${i}[]" value="Layout no Content Builder">Layout em geral no Content Builder e em dispositivos</div>
+                    <div class="checklist-item"><input type="checkbox" name="emails${i}[]" value="Validação do Link do banner">Validação do Link do banner</div>
+                    <div class="checklist-item"><input type="checkbox" name="emails${i}[]" value="Validação do Tagueamento GA / UTM">Validação do Tagueamento GA / UTM</div>
+                    <div class="checklist-item"><input type="checkbox" name="emails${i}[]" value="Validação do AMP script">Validação do AMP script (se houver)</div>
+                    <div class="checklist-item"><input type="checkbox" name="emails${i}[]" value="Validação do Tag de Open">Validação do Tag de Open</div>
+                    <div class="checklist-item"><input type="checkbox" name="emails${i}[]" value="Confirmar links dos CTAs">Confirmar links dos CTAs</div>
+                    <div class="checklist-item"><input type="checkbox" name="emails${i}[]" value="Validar subscriber key">Validar subscriber key das bases de disparo</div>
+                    <div class="checklist-item"><input type="checkbox" name="emails${i}[]" value="Disparo de teste para verificação interna">Disparo de teste para verificação interna</div>
+                    <div class="checklist-item"><input type="checkbox" name="emails${i}[]" value="Revisão por uma pessoa sênior">Revisão por uma pessoa sênior (2º Check)</div>
+                    <div class="checklist-item"><input type="checkbox" name="emails${i}[]" value="OK do cliente após teste">OK do cliente após teste</div>
+                    <div class="checklist-item"><input type="checkbox" name="emails${i}[]" value="Validação do dia e horário do disparo">Validação do dia e horário do disparo</div>
+                `;
+                emailsContainer.appendChild(emailSection);
+            }
+        }
+
         // Função para enviar os dados para Google Sheets
         function finalizarChecklist() {
             const validador = document.getElementById('validador').value;
             const atividade = document.getElementById('atividade').value;
             const dataValidacao = document.getElementById('dataValidacao').value;
 
-            const dataExtensions = Array.from(document.querySelectorAll('input[name="dataExtensions[]"]:checked')).map(cb => cb.value);
-            const automacao = Array.from(document.querySelectorAll('input[name="automacao[]"]:checked')).map(cb => cb.value);
-            const email = Array.from(document.querySelectorAll('input[name="email[]"]:checked')).map(cb => cb.value);
-            const smsPush = Array.from(document.querySelectorAll('input[name="smsPush[]"]:checked')).map(cb => cb.value);
-            const jornada = Array.from(document.querySelectorAll('input[name="jornada[]"]:checked')).map(cb => cb.value);
+            const dataExtensionNames = Array.from(document.querySelectorAll('input[name="dataExtensionNames[]"]')).map(input => input.value);
+            const emailNames = Array.from(document.querySelectorAll('input[name="emailNames[]"]')).map(input => input.value);
 
             const payload = {
                 validador,
                 atividade,
                 dataValidacao,
-                checklistDataExtensions: dataExtensions.join(', '),
-                checklistAutomacao: automacao.join(', '),
-                checklistEmail: email.join(', '),
-                checklistSmsPush: smsPush.join(', '),
-                checklistJornada: jornada.join(', ')
+                dataExtensionNames,
+                emailNames
             };
 
             fetch("https://script.google.com/macros/s/SEU_SCRIPT_URL/exec", {
